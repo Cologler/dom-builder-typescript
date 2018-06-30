@@ -45,6 +45,7 @@ namespace DomBuilder {
         private _classNames: string[]|undefined;
         private _childs: DomNode<any>[]|undefined;
         private _attrs: ({name: string, value: string})[]|undefined;
+        private _listeners: { type: string, cb: EventListener }[]|undefined;
 
         constructor(tagName: K) {
             this._tagName = tagName;
@@ -73,6 +74,9 @@ namespace DomBuilder {
             for (const attr of this._attrs || _EmptyArray as ({name: string, value: string})[]) {
                 el.setAttribute(attr.name, attr.value);
             }
+            for (const listener of this._listeners || _EmptyArray as ({type: string, cb: EventListener})[]) {
+                el.addEventListener(listener.type, listener.cb);
+            }
             return el;
         }
 
@@ -88,6 +92,11 @@ namespace DomBuilder {
 
         attr(name: string, value: string) {
             (this._attrs = this._attrs || []).push({ name, value });
+            return this;
+        }
+
+        on(type: string, cb: EventListener) {
+            (this._listeners = this._listeners || []).push({ type, cb });
             return this;
         }
     }
