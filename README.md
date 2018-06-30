@@ -22,10 +22,10 @@ db.el('p', [
 
 ``` js
 db.el('a')
-.id('c')
-.class('a', 'b')
-.attr('href', 'www.google.com')
-.get();
+  .id('c')
+  .class('a', 'b')
+  .attr('href', 'www.google.com')
+  .get();
 // <a id="c" class="a b" href="www.google.com"></a>
 ```
 
