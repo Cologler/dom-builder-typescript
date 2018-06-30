@@ -56,6 +56,20 @@ var DomBuilder;
             for (const attr of this._attrs || _EmptyArray) {
                 el.setAttribute(attr.name, attr.value);
             }
+            if (this._listeners) {
+                for (const listener of this._listeners) {
+                    if (listener.once) {
+                        const cb = function (...args) {
+                            el.removeEventListener(listener.type, cb);
+                            listener.cb.apply(this, args);
+                        };
+                        el.addEventListener(listener.type, cb);
+                    }
+                    else {
+                        el.addEventListener(listener.type, listener.cb);
+                    }
+                }
+            }
             return el;
         }
         id(id) {
@@ -68,6 +82,14 @@ var DomBuilder;
         }
         attr(name, value) {
             (this._attrs = this._attrs || []).push({ name, value });
+            return this;
+        }
+        on(type, cb) {
+            (this._listeners = this._listeners || []).push({ type, cb, once: false });
+            return this;
+        }
+        once(type, cb) {
+            (this._listeners = this._listeners || []).push({ type, cb, once: true });
             return this;
         }
     }

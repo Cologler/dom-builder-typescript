@@ -45,7 +45,7 @@ namespace DomBuilder {
         private _classNames: string[]|undefined;
         private _childs: DomNode<any>[]|undefined;
         private _attrs: ({name: string, value: string})[]|undefined;
-        private _listeners: { type: string, cb: EventListener }[]|undefined;
+        private _listeners: { type: string, cb: EventListener, once: boolean }[]|undefined;
 
         constructor(tagName: K) {
             this._tagName = tagName;
@@ -74,8 +74,18 @@ namespace DomBuilder {
             for (const attr of this._attrs || _EmptyArray as ({name: string, value: string})[]) {
                 el.setAttribute(attr.name, attr.value);
             }
-            for (const listener of this._listeners || _EmptyArray as ({type: string, cb: EventListener})[]) {
-                el.addEventListener(listener.type, listener.cb);
+            if (this._listeners) {
+                for (const listener of this._listeners) {
+                    if (listener.once) {
+                        const cb = function(this: any, ...args: any[]) {
+                            el.removeEventListener(listener.type, cb);
+                            listener.cb.apply(this, args);
+                        }
+                        el.addEventListener(listener.type, cb);
+                    } else {
+                        el.addEventListener(listener.type, listener.cb);
+                    }
+                }
             }
             return el;
         }
@@ -96,7 +106,12 @@ namespace DomBuilder {
         }
 
         on(type: string, cb: EventListener) {
-            (this._listeners = this._listeners || []).push({ type, cb });
+            (this._listeners = this._listeners || []).push({ type, cb, once: false });
+            return this;
+        }
+
+        once(type: string, cb: EventListener) {
+            (this._listeners = this._listeners || []).push({ type, cb, once: true });
             return this;
         }
     }
