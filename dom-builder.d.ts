@@ -20,7 +20,7 @@ declare namespace DomBuilder {
         private _attrs;
         private _listeners;
         constructor(tagName: K);
-        append(node: DomNode<any> | string): this;
+        append(...nodes: (DomNode<any> | string)[]): this;
         get(): HTMLElementTagNameMap[K];
         id(id: string): this;
         class(...classNames: string[]): this;
@@ -32,4 +32,3 @@ declare namespace DomBuilder {
     function text(value: string): DomText;
     function fragment(childs: (DomNode<any> | string)[]): DomFragment;
 }
-declare const db: typeof DomBuilder;

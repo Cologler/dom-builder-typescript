@@ -51,12 +51,14 @@ namespace DomBuilder {
             this._tagName = tagName;
         }
 
-        append(node: DomNode<any> | string) {
-            if (typeof node === 'string') {
-                node = text(node);
-            }
+        append(...nodes: (DomNode<any> | string)[]) {
             this._childs = this._childs || [];
-            this._childs.push(node);
+            for (let node of nodes) {
+                if (typeof node === 'string') {
+                    node = text(node);
+                }
+                this._childs.push(node);
+            }
             return this;
         }
 
@@ -126,24 +128,39 @@ namespace DomBuilder {
         }
     }
 
+    const DomElementTagNameMap = {
+        'a': DomAnchor
+    };
+
+    interface DomElementTagNameMap {
+        'a': DomAnchor
+    }
+
+    function el2<K extends keyof DomElementTagNameMap>(
+        tagName: K,
+        childs: (DomNode<any>|string)[]|string|null = null) {
+
+        const de = new DomElementTagNameMap[tagName]();
+        if (childs) {
+            if (typeof childs === 'string') {
+                de.append(childs);
+            } else {
+                de.append(...childs);
+            }
+        }
+        return de;
+    }
+
     export function el<K extends keyof HTMLElementTagNameMap>(
         tagName: K,
         childs: (DomNode<any>|string)[]|string|null = null) {
 
-        let de: DomElement<K>;
-        switch (tagName.toLowerCase()) {
-            case 'a':
-                de = new DomAnchor();
-                break;
-            default:
-                de = new DomElement(tagName);
-                break
-        }
-        if (typeof childs === 'string') {
-            de.append(childs);
-        } else if (Array.isArray(childs)) {
-            for (const n of childs) {
-                de.append(n);
+        const de = new DomElement(tagName);
+        if (childs) {
+            if (typeof childs === 'string') {
+                de.append(childs);
+            } else {
+                de.append(...childs);
             }
         }
         return de;
@@ -162,11 +179,3 @@ namespace DomBuilder {
         return df;
     }
 }
-
-const db = DomBuilder;
-db.el('p', [
-    '12',
-    db.el('p', 'p_value'),
-    "11"
-]).get();
-

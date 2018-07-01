@@ -34,12 +34,14 @@ var DomBuilder;
         constructor(tagName) {
             this._tagName = tagName;
         }
-        append(node) {
-            if (typeof node === 'string') {
-                node = text(node);
-            }
+        append(...nodes) {
             this._childs = this._childs || [];
-            this._childs.push(node);
+            for (let node of nodes) {
+                if (typeof node === 'string') {
+                    node = text(node);
+                }
+                this._childs.push(node);
+            }
             return this;
         }
         get() {
@@ -101,22 +103,29 @@ var DomBuilder;
             return this.attr('href', value);
         }
     }
+    const DomElementTagNameMap = {
+        'a': DomAnchor
+    };
+    function el2(tagName, childs = null) {
+        const de = new DomElementTagNameMap[tagName]();
+        if (childs) {
+            if (typeof childs === 'string') {
+                de.append(childs);
+            }
+            else {
+                de.append(...childs);
+            }
+        }
+        return de;
+    }
     function el(tagName, childs = null) {
-        let de;
-        switch (tagName.toLowerCase()) {
-            case 'a':
-                de = new DomAnchor();
-                break;
-            default:
-                de = new DomElement(tagName);
-                break;
-        }
-        if (typeof childs === 'string') {
-            de.append(childs);
-        }
-        else if (Array.isArray(childs)) {
-            for (const n of childs) {
-                de.append(n);
+        const de = new DomElement(tagName);
+        if (childs) {
+            if (typeof childs === 'string') {
+                de.append(childs);
+            }
+            else {
+                de.append(...childs);
             }
         }
         return de;
@@ -136,9 +145,3 @@ var DomBuilder;
     }
     DomBuilder.fragment = fragment;
 })(DomBuilder || (DomBuilder = {}));
-const db = DomBuilder;
-db.el('p', [
-    '12',
-    db.el('p', 'p_value'),
-    "11"
-]).get();
