@@ -103,8 +103,20 @@ var DomBuilder;
             return this.attr('href', value);
         }
     }
+    class DomImage extends DomElement {
+        constructor() {
+            super('img');
+        }
+        src(value) {
+            return this.attr('src', value);
+        }
+        alt(value) {
+            return this.attr('alt', value);
+        }
+    }
     const DomElementTagNameMap = {
-        'a': DomAnchor
+        'a': DomAnchor,
+        'img': DomImage,
     };
     function el2(tagName, childs = null) {
         const de = new DomElementTagNameMap[tagName]();

@@ -128,12 +128,28 @@ namespace DomBuilder {
         }
     }
 
+    class DomImage extends DomElement<'img'> {
+        constructor() {
+            super('img');
+        }
+
+        src(value: string) {
+            return this.attr('src', value);
+        }
+
+        alt(value: string) {
+            return this.attr('alt', value);
+        }
+    }
+
     const DomElementTagNameMap = {
-        'a': DomAnchor
+        'a': DomAnchor,
+        'img': DomImage,
     };
 
     interface DomElementTagNameMap {
-        'a': DomAnchor
+        'a': DomAnchor,
+        'img': DomImage,
     }
 
     function el2<K extends keyof DomElementTagNameMap>(
