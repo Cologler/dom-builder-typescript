@@ -22,11 +22,13 @@ namespace DomBuilder {
     class DomFragment implements DomNode<DocumentFragment> {
         private _childs: DomNode<any>[] = [];
 
-        append(node: DomNode<any> | string) {
-            if (typeof node === 'string') {
-                node = text(node);
+        append(...nodes: (DomNode<any> | string)[]) {
+            for (let node of nodes) {
+                if (typeof node === 'string') {
+                    node = text(node);
+                }
+                this._childs.push(node);
             }
-            this._childs.push(node);
             return this;
         }
 
@@ -187,11 +189,9 @@ namespace DomBuilder {
         return dn;
     }
 
-    export function fragment(childs: (DomNode<any>|string)[]) {
+    export function fragment(childs: (DomNode<any>|string)[]|null = null) {
         const df = new DomFragment();
-        for (const n of childs) {
-            df.append(n);
-        }
+        childs && df.append(...childs);
         return df;
     }
 }

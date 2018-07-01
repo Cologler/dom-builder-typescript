@@ -15,11 +15,13 @@ var DomBuilder;
         constructor() {
             this._childs = [];
         }
-        append(node) {
-            if (typeof node === 'string') {
-                node = text(node);
+        append(...nodes) {
+            for (let node of nodes) {
+                if (typeof node === 'string') {
+                    node = text(node);
+                }
+                this._childs.push(node);
             }
-            this._childs.push(node);
             return this;
         }
         get() {
@@ -149,11 +151,9 @@ var DomBuilder;
         return dn;
     }
     DomBuilder.text = text;
-    function fragment(childs) {
+    function fragment(childs = null) {
         const df = new DomFragment();
-        for (const n of childs) {
-            df.append(n);
-        }
+        childs && df.append(...childs);
         return df;
     }
     DomBuilder.fragment = fragment;

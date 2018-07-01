@@ -9,7 +9,7 @@ declare namespace DomBuilder {
     }
     class DomFragment implements DomNode<DocumentFragment> {
         private _childs;
-        append(node: DomNode<any> | string): this;
+        append(...nodes: (DomNode<any> | string)[]): this;
         get(): DocumentFragment;
     }
     class DomElement<K extends keyof HTMLElementTagNameMap> implements DomNode<HTMLElementTagNameMap[K]> {
@@ -48,5 +48,5 @@ declare namespace DomBuilder {
     function el2<K extends keyof DomElementTagNameMap>(tagName: K, childs?: (DomNode<any> | string)[] | string | null): DomAnchor | DomImage;
     function el<K extends keyof HTMLElementTagNameMap>(tagName: K, childs?: (DomNode<any> | string)[] | string | null): DomElement<K>;
     function text(value: string): DomText;
-    function fragment(childs: (DomNode<any> | string)[]): DomFragment;
+    function fragment(childs?: (DomNode<any> | string)[] | null): DomFragment;
 }
