@@ -152,7 +152,7 @@ namespace DomBuilder {
         'img': DomImage,
     }
 
-    function el2<K extends keyof DomElementTagNameMap>(
+    export function el2<K extends keyof DomElementTagNameMap>(
         tagName: K,
         childs: (DomNode<any>|string)[]|string|null = null) {
 

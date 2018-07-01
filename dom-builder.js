@@ -130,6 +130,7 @@ var DomBuilder;
         }
         return de;
     }
+    DomBuilder.el2 = el2;
     function el(tagName, childs = null) {
         const de = new DomElement(tagName);
         if (childs) {
