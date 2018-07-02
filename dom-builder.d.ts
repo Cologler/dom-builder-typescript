@@ -13,11 +13,17 @@ declare namespace DomBuilder {
         get(): DocumentFragment;
     }
     interface ElementOptions {
-        id: string | null | undefined;
-        class: string[] | null | undefined;
-        attrs: {
+        id?: string;
+        class?: string[] | string;
+        attrs?: {
             [attr: string]: string;
-        } | undefined;
+        };
+        on?: {
+            [type: string]: EventListener | EventListener[];
+        };
+        once?: {
+            [type: string]: EventListener | EventListener[];
+        };
     }
     class DomElement<K extends keyof HTMLElementTagNameMap> implements DomNode<HTMLElementTagNameMap[K]> {
         private _tagName;

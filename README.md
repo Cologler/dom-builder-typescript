@@ -16,6 +16,16 @@ db.el('p', [
 //   <p>p_value</p>
 //   "11"
 // </p>
+db.el('p', { id: 'p1', class: ['a', 'b'], attrs: { 'x': 'y' } }, [
+    '12',
+    db.el('p', 'p_value'),
+    "11"
+]).get();
+// <p id="p1" class="a b" x="y">
+//   "12"
+//   <p>p_value</p>
+//   "11"
+// </p>
 ```
 
 **method chaining**: like jquery:

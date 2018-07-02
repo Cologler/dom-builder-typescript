@@ -41,11 +41,42 @@ var DomBuilder;
                 this.id(options.id);
             }
             if (options.class) {
-                this.class(...options.class);
+                if (typeof options.class === 'string') {
+                    this.class(options.class);
+                }
+                else {
+                    this.class(...options.class);
+                }
             }
             if (options.attrs) {
                 for (const attr in options.attrs) {
                     this.attr(attr, options.attrs[attr]);
+                }
+            }
+            if (options.on) {
+                for (const type in options.on) {
+                    const val = options.on[type];
+                    if (Array.isArray(val)) {
+                        for (const cb of val) {
+                            this.on(type, cb);
+                        }
+                    }
+                    else {
+                        this.on(type, val);
+                    }
+                }
+            }
+            if (options.once) {
+                for (const type in options.once) {
+                    const val = options.once[type];
+                    if (Array.isArray(val)) {
+                        for (const cb of val) {
+                            this.once(type, cb);
+                        }
+                    }
+                    else {
+                        this.once(type, val);
+                    }
                 }
             }
             return this;
