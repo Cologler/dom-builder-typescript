@@ -12,6 +12,13 @@ declare namespace DomBuilder {
         append(...nodes: (DomNode<any> | string)[]): this;
         get(): DocumentFragment;
     }
+    interface ElementOptions {
+        id: string | null | undefined;
+        class: string[] | null | undefined;
+        attrs: {
+            [attr: string]: string;
+        } | undefined;
+    }
     class DomElement<K extends keyof HTMLElementTagNameMap> implements DomNode<HTMLElementTagNameMap[K]> {
         private _tagName;
         private _id;
@@ -20,10 +27,33 @@ declare namespace DomBuilder {
         private _attrs;
         private _listeners;
         constructor(tagName: K);
+        loadOptions(options: ElementOptions): this;
         append(...nodes: (DomNode<any> | string)[]): this;
         get(): HTMLElementTagNameMap[K];
+        /**
+         * set id of element.
+         *
+         * @param {string} id
+         * @returns
+         * @memberof DomElement
+         */
         id(id: string): this;
+        /**
+         * set class of element.
+         *
+         * @param {...string[]} classNames
+         * @returns
+         * @memberof DomElement
+         */
         class(...classNames: string[]): this;
+        /**
+         * set attr of element.
+         *
+         * @param {string} name
+         * @param {string} value
+         * @returns
+         * @memberof DomElement
+         */
         attr(name: string, value: string): this;
         on(type: string, cb: EventListener): this;
         once(type: string, cb: EventListener): this;
@@ -45,8 +75,14 @@ declare namespace DomBuilder {
         'a': DomAnchor;
         'img': DomImage;
     }
-    function el2<K extends keyof DomElementTagNameMap>(tagName: K, childs?: (DomNode<any> | string)[] | string | null): DomAnchor | DomImage;
-    function el<K extends keyof HTMLElementTagNameMap>(tagName: K, childs?: (DomNode<any> | string)[] | string | null): DomElement<K>;
+    function el2<K extends keyof DomElementTagNameMap>(tagName: K): DomElementTagNameMap[K];
+    function el2<K extends keyof DomElementTagNameMap>(tagName: K, options: ElementOptions | null): DomElementTagNameMap[K];
+    function el2<K extends keyof DomElementTagNameMap>(tagName: K, childs: (DomNode<any> | string)[] | string): DomElementTagNameMap[K];
+    function el2<K extends keyof DomElementTagNameMap>(tagName: K, options: ElementOptions, childs: (DomNode<any> | string)[] | string): DomElementTagNameMap[K];
+    function el<K extends keyof HTMLElementTagNameMap>(tagName: K): DomElement<K>;
+    function el<K extends keyof HTMLElementTagNameMap>(tagName: K, options: ElementOptions | null): DomElement<K>;
+    function el<K extends keyof HTMLElementTagNameMap>(tagName: K, childs: (DomNode<any> | string)[] | string): DomElement<K>;
+    function el<K extends keyof HTMLElementTagNameMap>(tagName: K, options: ElementOptions, childs: (DomNode<any> | string)[] | string): DomElement<K>;
     function text(value: string): DomText;
     function fragment(childs?: (DomNode<any> | string)[] | null): DomFragment;
 }

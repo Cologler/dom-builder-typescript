@@ -41,6 +41,12 @@ namespace DomBuilder {
         }
     }
 
+    interface ElementOptions {
+        id: string|null|undefined,
+        class: string[]|null|undefined,
+        attrs: { [attr: string]: string }|undefined
+    }
+
     class DomElement<K extends keyof HTMLElementTagNameMap> implements DomNode<HTMLElementTagNameMap[K]> {
         private _tagName: string;
         private _id: string|undefined;
@@ -51,6 +57,21 @@ namespace DomBuilder {
 
         constructor(tagName: K) {
             this._tagName = tagName;
+        }
+
+        loadOptions(options: ElementOptions) {
+            if (options.id) {
+                this.id(options.id);
+            }
+            if (options.class) {
+                this.class(...options.class);
+            }
+            if (options.attrs) {
+                for (const attr in options.attrs) {
+                    this.attr(attr, options.attrs[attr])
+                }
+            }
+            return this;
         }
 
         append(...nodes: (DomNode<any> | string)[]) {
@@ -94,16 +115,39 @@ namespace DomBuilder {
             return el;
         }
 
+
+        /**
+         * set id of element.
+         *
+         * @param {string} id
+         * @returns
+         * @memberof DomElement
+         */
         id(id: string) {
             this._id = id;
             return this;
         }
 
+        /**
+         * set class of element.
+         *
+         * @param {...string[]} classNames
+         * @returns
+         * @memberof DomElement
+         */
         class(...classNames: string[]) {
             (this._classNames = this._classNames || []).push(...classNames);
             return this;
         }
 
+        /**
+         * set attr of element.
+         *
+         * @param {string} name
+         * @param {string} value
+         * @returns
+         * @memberof DomElement
+         */
         attr(name: string, value: string) {
             (this._attrs = this._attrs || []).push({ name, value });
             return this;
@@ -154,11 +198,39 @@ namespace DomBuilder {
         'img': DomImage,
     }
 
-    export function el2<K extends keyof DomElementTagNameMap>(
-        tagName: K,
-        childs: (DomNode<any>|string)[]|string|null = null) {
+    function mel<K extends keyof HTMLElementTagNameMap, E extends DomElement<K>>(
+        de: E): E;
+    function mel<K extends keyof HTMLElementTagNameMap, E extends DomElement<K>>(
+        de: E, options: ElementOptions): E;
+    function mel<K extends keyof HTMLElementTagNameMap, E extends DomElement<K>>(
+        de: E, childs: (DomNode<any>|string)[]|string): E;
+    function mel<K extends keyof HTMLElementTagNameMap, E extends DomElement<K>>(
+        de: E, options: ElementOptions, childs: (DomNode<any>|string)[]|string): E;
+    function mel<K extends keyof HTMLElementTagNameMap, E extends DomElement<K>>(
+        de: E,
+        arg1?: ElementOptions|(DomNode<any>|string)[]|string,
+        arg2?: (DomNode<any>|string)[]|string
+    ) {
+        let options: ElementOptions|undefined;
+        let childs: (DomNode<any>|string)[]|string|undefined;
 
-        const de = new DomElementTagNameMap[tagName]();
+        if (typeof arg1 === 'object') {
+            if (Array.isArray(arg1)) {
+                childs = arg1;
+            } else {
+                options = arg1;
+                if (arg2) {
+                    childs = arg2;
+                }
+            }
+        } else if (typeof arg1 === 'string') {
+            childs = arg1;
+        }
+
+        if (options) {
+            de.loadOptions(options);
+        }
+
         if (childs) {
             if (typeof childs === 'string') {
                 de.append(childs);
@@ -166,22 +238,42 @@ namespace DomBuilder {
                 de.append(...childs);
             }
         }
+
         return de;
     }
 
+    export function el2<K extends keyof DomElementTagNameMap>(tagName: K) : DomElementTagNameMap[K];
+    export function el2<K extends keyof DomElementTagNameMap>(tagName: K,
+        options: ElementOptions|null) : DomElementTagNameMap[K];
+    export function el2<K extends keyof DomElementTagNameMap>(tagName: K,
+        childs: (DomNode<any>|string)[]|string) : DomElementTagNameMap[K];
+    export function el2<K extends keyof DomElementTagNameMap>(tagName: K,
+        options: ElementOptions,
+        childs: (DomNode<any>|string)[]|string) : DomElementTagNameMap[K];
+    export function el2<K extends keyof DomElementTagNameMap>(
+        tagName: K,
+        arg1?: any,
+        arg2?: any) : DomElementTagNameMap[K] {
+
+        const de = new DomElementTagNameMap[tagName]();
+        return mel(de, arg1, arg2);
+    }
+
+    export function el<K extends keyof HTMLElementTagNameMap>(tagName: K) : DomElement<K>;
+    export function el<K extends keyof HTMLElementTagNameMap>(tagName: K,
+        options: ElementOptions|null) : DomElement<K>;
+    export function el<K extends keyof HTMLElementTagNameMap>(tagName: K,
+        childs: (DomNode<any>|string)[]|string) : DomElement<K>;
+    export function el<K extends keyof HTMLElementTagNameMap>(tagName: K,
+        options: ElementOptions,
+        childs: (DomNode<any>|string)[]|string) : DomElement<K>;
     export function el<K extends keyof HTMLElementTagNameMap>(
         tagName: K,
-        childs: (DomNode<any>|string)[]|string|null = null) {
+        arg1?: any,
+        arg2?: any) : DomElement<K> {
 
         const de = new DomElement(tagName);
-        if (childs) {
-            if (typeof childs === 'string') {
-                de.append(childs);
-            } else {
-                de.append(...childs);
-            }
-        }
-        return de;
+        return mel(de, arg1, arg2);
     }
 
     export function text(value: string) {

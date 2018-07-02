@@ -36,6 +36,20 @@ var DomBuilder;
         constructor(tagName) {
             this._tagName = tagName;
         }
+        loadOptions(options) {
+            if (options.id) {
+                this.id(options.id);
+            }
+            if (options.class) {
+                this.class(...options.class);
+            }
+            if (options.attrs) {
+                for (const attr in options.attrs) {
+                    this.attr(attr, options.attrs[attr]);
+                }
+            }
+            return this;
+        }
         append(...nodes) {
             this._childs = this._childs || [];
             for (let node of nodes) {
@@ -76,14 +90,36 @@ var DomBuilder;
             }
             return el;
         }
+        /**
+         * set id of element.
+         *
+         * @param {string} id
+         * @returns
+         * @memberof DomElement
+         */
         id(id) {
             this._id = id;
             return this;
         }
+        /**
+         * set class of element.
+         *
+         * @param {...string[]} classNames
+         * @returns
+         * @memberof DomElement
+         */
         class(...classNames) {
             (this._classNames = this._classNames || []).push(...classNames);
             return this;
         }
+        /**
+         * set attr of element.
+         *
+         * @param {string} name
+         * @param {string} value
+         * @returns
+         * @memberof DomElement
+         */
         attr(name, value) {
             (this._attrs = this._attrs || []).push({ name, value });
             return this;
@@ -120,8 +156,26 @@ var DomBuilder;
         'a': DomAnchor,
         'img': DomImage,
     };
-    function el2(tagName, childs = null) {
-        const de = new DomElementTagNameMap[tagName]();
+    function mel(de, arg1, arg2) {
+        let options;
+        let childs;
+        if (typeof arg1 === 'object') {
+            if (Array.isArray(arg1)) {
+                childs = arg1;
+            }
+            else {
+                options = arg1;
+                if (arg2) {
+                    childs = arg2;
+                }
+            }
+        }
+        else if (typeof arg1 === 'string') {
+            childs = arg1;
+        }
+        if (options) {
+            de.loadOptions(options);
+        }
         if (childs) {
             if (typeof childs === 'string') {
                 de.append(childs);
@@ -132,18 +186,14 @@ var DomBuilder;
         }
         return de;
     }
+    function el2(tagName, arg1, arg2) {
+        const de = new DomElementTagNameMap[tagName]();
+        return mel(de, arg1, arg2);
+    }
     DomBuilder.el2 = el2;
-    function el(tagName, childs = null) {
+    function el(tagName, arg1, arg2) {
         const de = new DomElement(tagName);
-        if (childs) {
-            if (typeof childs === 'string') {
-                de.append(childs);
-            }
-            else {
-                de.append(...childs);
-            }
-        }
-        return de;
+        return mel(de, arg1, arg2);
     }
     DomBuilder.el = el;
     function text(value) {
