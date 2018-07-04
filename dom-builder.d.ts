@@ -63,6 +63,7 @@ declare namespace DomBuilder {
         attr(name: string, value: string): this;
         on(type: string, cb: EventListener): this;
         once(type: string, cb: EventListener): this;
+        addListener(type: string, cb: EventListener, options: AddEventListenerOptions): this;
     }
     class DomAnchor extends DomElement<HTMLAnchorElement> {
         constructor();

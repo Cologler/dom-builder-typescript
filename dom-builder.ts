@@ -49,13 +49,19 @@ namespace DomBuilder {
         once?: { [type: string]: EventListener|EventListener[] },
     }
 
+    interface Listener {
+        type: string;
+        cb: EventListener;
+        options: AddEventListenerOptions;
+    }
+
     class DomElement<E extends HTMLElement> implements DomNode<E> {
         private _tagName: string;
         private _id: string|undefined;
         private _classNames: string[]|undefined;
         private _childs: DomNode<any>[]|undefined;
         private _attrs: ({name: string, value: string})[]|undefined;
-        private _listeners: { type: string, cb: EventListener, once: boolean }[]|undefined;
+        private _listeners: Listener[]|undefined;
 
         constructor(tagName: string) {
             this._tagName = tagName;
@@ -131,15 +137,7 @@ namespace DomBuilder {
             }
             if (this._listeners) {
                 for (const listener of this._listeners) {
-                    if (listener.once) {
-                        const cb = function(this: any, ...args: any[]) {
-                            el.removeEventListener(listener.type, cb);
-                            listener.cb.apply(this, args);
-                        }
-                        el.addEventListener(listener.type, cb);
-                    } else {
-                        el.addEventListener(listener.type, listener.cb);
-                    }
+                    el.addEventListener(listener.type, listener.cb, listener.options);
                 }
             }
             return el as E;
@@ -183,12 +181,17 @@ namespace DomBuilder {
         }
 
         on(type: string, cb: EventListener) {
-            (this._listeners = this._listeners || []).push({ type, cb, once: false });
-            return this;
+            return this.addListener(type, cb, { once: false });
         }
 
         once(type: string, cb: EventListener) {
-            (this._listeners = this._listeners || []).push({ type, cb, once: true });
+            return this.addListener(type, cb, { once: true });
+        }
+
+        addListener(type: string, cb: EventListener, options: AddEventListenerOptions) {
+            (this._listeners = this._listeners || []).push({
+                type, cb, options: options
+            });
             return this;
         }
     }
