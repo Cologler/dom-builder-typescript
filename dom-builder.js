@@ -234,4 +234,3 @@ var DomBuilder;
     }
     DomBuilder.fragment = fragment;
 })(DomBuilder || (DomBuilder = {}));
-DomBuilder.el('a11', '');
