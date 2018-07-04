@@ -187,7 +187,7 @@ var DomBuilder;
         'a': DomAnchor,
         'img': DomImage,
     };
-    function mel(de, arg1, arg2) {
+    function make(de, arg1, arg2) {
         let options;
         let childs;
         if (typeof arg1 === 'object') {
@@ -219,12 +219,12 @@ var DomBuilder;
     }
     function el2(tagName, arg1, arg2) {
         const de = new DomElementTagNameMap[tagName]();
-        return mel(de, arg1, arg2);
+        return make(de, arg1, arg2);
     }
     DomBuilder.el2 = el2;
     function el(tagName, arg1, arg2) {
         const de = new DomElement(tagName);
-        return mel(de, arg1, arg2);
+        return make(de, arg1, arg2);
     }
     DomBuilder.el = el;
     function text(value) {
