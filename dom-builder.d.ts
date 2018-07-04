@@ -90,6 +90,10 @@ declare namespace DomBuilder {
     function el<K extends keyof HTMLElementTagNameMap>(tagName: K, options: ElementOptions | null): DomElement<HTMLElementTagNameMap[K]>;
     function el<K extends keyof HTMLElementTagNameMap>(tagName: K, childs: (DomNode<any> | string)[] | string): DomElement<HTMLElementTagNameMap[K]>;
     function el<K extends keyof HTMLElementTagNameMap>(tagName: K, options: ElementOptions, childs: (DomNode<any> | string)[] | string): DomElement<HTMLElementTagNameMap[K]>;
+    function el<E extends HTMLElement>(tagName: string): DomElement<E>;
+    function el<E extends HTMLElement>(tagName: string, options: ElementOptions | null): DomElement<E>;
+    function el<E extends HTMLElement>(tagName: string, childs: (DomNode<any> | string)[] | string): DomElement<E>;
+    function el<E extends HTMLElement>(tagName: string, options: ElementOptions, childs: (DomNode<any> | string)[] | string): DomElement<E>;
     function text(value: string): DomText;
     function fragment(childs?: (DomNode<any> | string)[] | null): DomFragment;
 }

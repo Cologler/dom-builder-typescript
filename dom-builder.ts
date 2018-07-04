@@ -271,39 +271,38 @@ namespace DomBuilder {
         return de;
     }
 
-    export function el2<K extends keyof DomElementTagNameMap>(
-        tagName: K) : DomElementTagNameMap[K];
-    export function el2<K extends keyof DomElementTagNameMap>(
-        tagName: K, options: ElementOptions|null) : DomElementTagNameMap[K];
-    export function el2<K extends keyof DomElementTagNameMap>(
-        tagName: K, childs: (DomNode<any>|string)[]|string) : DomElementTagNameMap[K];
-    export function el2<K extends keyof DomElementTagNameMap>(
-        tagName: K, options: ElementOptions,
+    export function el2<K extends keyof DomElementTagNameMap>(tagName: K) : DomElementTagNameMap[K];
+    export function el2<K extends keyof DomElementTagNameMap>(tagName: K,
+        options: ElementOptions|null) : DomElementTagNameMap[K];
+    export function el2<K extends keyof DomElementTagNameMap>(tagName: K,
         childs: (DomNode<any>|string)[]|string) : DomElementTagNameMap[K];
-    export function el2<K extends keyof DomElementTagNameMap>(
-        tagName: K,
-        arg1?: any,
-        arg2?: any) : DomElementTagNameMap[K] {
+    export function el2<K extends keyof DomElementTagNameMap>(tagName: K,
+        options: ElementOptions, childs: (DomNode<any>|string)[]|string) : DomElementTagNameMap[K];
 
+    export function el2<K extends keyof DomElementTagNameMap>(
+        tagName: K, arg1?: any, arg2?: any) : DomElementTagNameMap[K] {
         const de = new DomElementTagNameMap[tagName]();
         return make(de, arg1, arg2);
     }
 
-    export function el<K extends keyof HTMLElementTagNameMap>(tagName: K)
-        : DomElement<HTMLElementTagNameMap[K]>;
+    export function el<K extends keyof HTMLElementTagNameMap>(tagName: K): DomElement<HTMLElementTagNameMap[K]>;
     export function el<K extends keyof HTMLElementTagNameMap>(tagName: K,
         options: ElementOptions|null) : DomElement<HTMLElementTagNameMap[K]>;
     export function el<K extends keyof HTMLElementTagNameMap>(tagName: K,
         childs: (DomNode<any>|string)[]|string) : DomElement<HTMLElementTagNameMap[K]>;
     export function el<K extends keyof HTMLElementTagNameMap>(tagName: K,
-        options: ElementOptions,
-        childs: (DomNode<any>|string)[]|string) : DomElement<HTMLElementTagNameMap[K]>;
-    export function el<K extends keyof HTMLElementTagNameMap>(
-        tagName: K,
-        arg1?: any,
-        arg2?: any) : DomElement<HTMLElementTagNameMap[K]> {
+        options: ElementOptions, childs: (DomNode<any>|string)[]|string) : DomElement<HTMLElementTagNameMap[K]>;
 
-        const de = new DomElement(tagName);
+    export function el<E extends HTMLElement>(tagName: string): DomElement<E>;
+    export function el<E extends HTMLElement>(tagName: string,
+        options: ElementOptions|null) : DomElement<E>;
+    export function el<E extends HTMLElement>(tagName: string,
+        childs: (DomNode<any>|string)[]|string) : DomElement<E>;
+    export function el<E extends HTMLElement>(tagName: string,
+        options: ElementOptions, childs: (DomNode<any>|string)[]|string) : DomElement<E>;
+
+    export function el<E extends HTMLElement>(tagName: string, arg1?: any, arg2?: any) : DomElement<E> {
+        const de = new DomElement<E>(tagName);
         return make(de, arg1, arg2);
     }
 
@@ -318,3 +317,4 @@ namespace DomBuilder {
         return df;
     }
 }
+DomBuilder.el('a11', '')
