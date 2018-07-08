@@ -2,10 +2,25 @@
   "name": "dom-builder",
   "version": "0.1.0",
   "description": "",
-  "main": "dom-builder.js",
+  "main": "dist/dom-builder.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "tsc"
   },
   "author": "Cologler",
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": [
+    "middleware"
+  ],
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/Cologler/dom-builder-typescript",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Cologler/dom-builder-typescript.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Cologler/dom-builder-typescript/issues"
+  }
 }
