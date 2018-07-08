@@ -1,5 +1,7 @@
 # dom-builder
 
+[![](https://data.jsdelivr.com/v1/package/gh/Cologler/dom-builder-typescript/badge)](https://www.jsdelivr.com/package/gh/Cologler/dom-builder-typescript)
+
 A nice api for browser dom. idea from React.
 
 **look**: like the dom tree:
@@ -40,3 +42,7 @@ db.el('a')
 ```
 
 **lazy create**: only create node when you call `get()`
+
+## CDN
+
+* [jsdelivr](https://cdn.jsdelivr.net/gh/Cologler/dom-builder-typescript/dist/dom-builder.js)
