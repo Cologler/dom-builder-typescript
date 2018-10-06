@@ -52,16 +52,16 @@ namespace DomBuilder {
     interface Listener {
         type: string;
         cb: EventListener;
-        options: AddEventListenerOptions;
+        options?: boolean | AddEventListenerOptions;
     }
 
     class DomElement<E extends HTMLElement> implements DomNode<E> {
         private _tagName: string;
-        private _id: string|undefined;
-        private _classNames: string[]|undefined;
-        private _childs: DomNode<any>[]|undefined;
-        private _attrs: ({name: string, value: string})[]|undefined;
-        private _listeners: Listener[]|undefined;
+        private _id?: string;
+        private _classNames?: string[];
+        private _childs?: DomNode<any>[];
+        private _attrs?: ({name: string, value: string})[];
+        private _listeners?: Listener[];
 
         constructor(tagName: string) {
             this._tagName = tagName;
@@ -311,7 +311,7 @@ namespace DomBuilder {
         return dn;
     }
 
-    export function fragment(childs: (DomNode<any>|string)[]|null = null) {
+    export function fragment(childs?: (DomNode<any>|string)[]) {
         const df = new DomFragment();
         childs && df.append(...childs);
         return df;
